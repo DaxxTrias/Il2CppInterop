@@ -12,6 +12,8 @@
     <ImplicitUsings>false</ImplicitUsings>
     <LangVersion>Latest</LangVersion>
     <Nullable>enable</Nullable>
+    <DebugType>Full</DebugType>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>

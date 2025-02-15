@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Il2CppInterop.StructGenerator</RootNamespace>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <DebugType>Full</DebugType>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
