@@ -19,17 +19,44 @@ namespace Il2CppInterop.Runtime.Injection.Hooks
 
         private Il2CppMethodInfo* Hook(Il2CppGenericMethod* gmethod, bool copyMethodPtr)
         {
+            if (gmethod == null || gmethod->methodDefinition == null)
+            {
+                Logger.Instance.LogTrace("gmethod or gmethod->methodDefinition is null");
+                return null;
+            }
+
             if (ClassInjector.InflatedMethodFromContextDictionary.TryGetValue((IntPtr)gmethod->methodDefinition, out var methods))
             {
                 var instancePointer = gmethod->context.method_inst;
+                if (instancePointer == null)
+                {
+                    Logger.Instance.LogTrace("gmethod->context.method_inst is null");
+                    return null;
+                }
+
                 if (methods.Item2.TryGetValue((IntPtr)instancePointer, out var inflatedMethodPointer))
                     return (Il2CppMethodInfo*)inflatedMethodPointer;
 
                 var typeArguments = new Type[instancePointer->type_argc];
                 for (var i = 0; i < instancePointer->type_argc; i++)
+                {
+                    if (instancePointer->type_argv == null)
+                    {
+                        Logger.Instance.LogTrace("instancePointer->type_argv is null");
+                        return null;
+                    }
                     typeArguments[i] = ClassInjector.SystemTypeFromIl2CppType(instancePointer->type_argv[i]);
+                }
+
+                if (methods.Item1 == null)
+                {
+                    Logger.Instance.LogTrace("methods.Item1 is null");
+                    return null;
+                }
+
                 var inflatedMethod = methods.Item1.MakeGenericMethod(typeArguments);
                 Logger.Instance.LogTrace("Inflated method: {InflatedMethod}", inflatedMethod.Name);
+
                 inflatedMethodPointer = (IntPtr)ClassInjector.ConvertMethodInfo(inflatedMethod,
                     UnityVersionHandler.Wrap(UnityVersionHandler.Wrap(gmethod->methodDefinition).Class));
                 methods.Item2.Add((IntPtr)instancePointer, inflatedMethodPointer);
