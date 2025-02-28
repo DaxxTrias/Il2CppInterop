@@ -75,15 +75,16 @@ public static class StringEx
 
         var length = data.Length;
         byte[]? rentedArray = null;
-        Span<byte> rentedArraySpan = default;
 
         if (char.IsDigit((char)data[0]))
         {
             length++;
             rentedArray = ArrayPool<byte>.Shared.Rent(length);
             rentedArray[0] = (byte)'_';
-            rentedArraySpan = rentedArray.AsSpan(1);
-            data.CopyTo(rentedArraySpan);
+            for (int i = 0; i < data.Length; i++)
+            {
+                rentedArray[i + 1] = data[i];
+            }
         }
 
         for (var i = 0; i < data.Length; i++)
@@ -94,10 +95,12 @@ public static class StringEx
             if (rentedArray is null)
             {
                 rentedArray = ArrayPool<byte>.Shared.Rent(length);
-                rentedArraySpan = rentedArray.AsSpan();
-                data.CopyTo(rentedArraySpan);
+                for (int j = 0; j < data.Length; j++)
+                {
+                    rentedArray[j] = data[j];
+                }
             }
-            rentedArraySpan[i] = (byte)'_';
+            rentedArray[i] = (byte)'_';
         }
 
         if (rentedArray is not null)

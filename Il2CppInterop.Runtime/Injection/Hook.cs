@@ -25,12 +25,18 @@ namespace Il2CppInterop.Runtime.Injection
 
         public void ApplyHook()
         {
-            if (_isApplied) return;
+            //Logger.Instance.LogTrace("Start of ApplyHook");
+            if (_isApplied)
+            {
+                //Logger.Instance.LogTrace("Hook already applied");
+                return;
+            }
 
             var methodPtr = FindTargetMethod();
 
             if (methodPtr == IntPtr.Zero)
             {
+                //Logger.Instance.LogError("Target method not found");
                 TargetMethodNotFound();
                 return;
             }
@@ -41,6 +47,7 @@ namespace Il2CppInterop.Runtime.Injection
             Detour.Apply(methodPtr, _detour, out _original);
             _method = Marshal.GetDelegateForFunctionPointer<T>(methodPtr);
             _isApplied = true;
+            //Logger.Instance.LogTrace("End of ApplyHook");
         }
     }
 }

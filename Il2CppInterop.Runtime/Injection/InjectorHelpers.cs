@@ -11,6 +11,8 @@ using Il2CppInterop.Common;
 using Il2CppInterop.Common.Extensions;
 using Il2CppInterop.Common.XrefScans;
 using Il2CppInterop.Runtime.Injection.Hooks;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
+
 //using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppInterop.Runtime.Runtime;
 using Il2CppInterop.Runtime.Runtime.VersionSpecific.Assembly;
@@ -201,17 +203,17 @@ namespace Il2CppInterop.Runtime.Injection
         }
         #endregion
 
-        //internal static bool IsSpanConstructorAvailable()
-        //{
-        //    var spanType = typeof(Span<>).MakeGenericType(typeof(byte));
-        //    var constructor = spanType.GetConstructor(new[] { typeof(Il2CppStructArray<byte>) });
-        //    return constructor != null;
-        //}
-        //internal static bool IsIl2CppStructArrayConstructorAvailable()
-        //{
-        //    var structArrayType = typeof(Il2CppStructArray<>).MakeGenericType(typeof(byte));
-        //    var constructor = structArrayType.GetConstructor(new[] { typeof(Il2CppStructArray<byte>) });
-        //    return constructor != null;
-        //}
+        internal static bool IsSpanConstructorAvailable()
+        {
+            var spanType = typeof(Span<>).MakeGenericType(typeof(byte));
+            var constructor = spanType.GetConstructor(new[] { typeof(Il2CppStructArray<byte>) });
+            return constructor != null;
+        }
+        internal static bool IsIl2CppStructArrayConstructorAvailable()
+        {
+            var structArrayType = typeof(Il2CppStructArray<>).MakeGenericType(typeof(byte));
+            var constructor = structArrayType.GetConstructor(new[] { typeof(Il2CppStructArray<byte>) });
+            return constructor != null;
+        }
     }
 }

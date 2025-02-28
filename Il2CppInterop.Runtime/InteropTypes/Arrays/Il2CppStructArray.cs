@@ -20,18 +20,22 @@ public class Il2CppStructArray<T> : Il2CppArrayBase<T> where T : unmanaged
 
     public Il2CppStructArray(T[] arr) : base(AllocateArray(arr.Length))
     {
-        arr.CopyTo(this);
+        for (int i = 0; i < arr.Length; i++)
+        {
+            this[i] = arr[i];
+        }
     }
 
     public override T this[int index]
     {
-        get => AsSpan()[index];
-        set => AsSpan()[index] = value;
+        get => GetElementPointer(index);
+        set => GetElementPointer(index) = value;
     }
 
-    public unsafe Span<T> AsSpan()
+    private unsafe ref T GetElementPointer(int index)
     {
-        return new Span<T>(ArrayStartPointer.ToPointer(), Length);
+        ThrowIfIndexOutOfRange(index);
+        return ref ((T*)ArrayStartPointer.ToPointer())[index];
     }
 
     [return: NotNullIfNotNull(nameof(arr))]
@@ -42,15 +46,15 @@ public class Il2CppStructArray<T> : Il2CppArrayBase<T> where T : unmanaged
         return new Il2CppStructArray<T>(arr);
     }
 
-    public static implicit operator Span<T>(Il2CppStructArray<T>? il2CppArray)
-    {
-        return il2CppArray is not null ? il2CppArray.AsSpan() : default;
-    }
+    //public static implicit operator Span<T>(Il2CppStructArray<T>? il2CppArray)
+    //{
+    //    return il2CppArray is not null ? il2CppArray.AsSpan() : default;
+    //}
 
-    public static implicit operator ReadOnlySpan<T>(Il2CppStructArray<T>? il2CppArray)
-    {
-        return il2CppArray is not null ? il2CppArray.AsSpan() : default;
-    }
+    //public static implicit operator ReadOnlySpan<T>(Il2CppStructArray<T>? il2CppArray)
+    //{
+    //    return il2CppArray is not null ? il2CppArray.AsSpan() : default;
+    //}
 
     private static IntPtr AllocateArray(long size)
     {

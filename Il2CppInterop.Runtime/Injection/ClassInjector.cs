@@ -591,23 +591,25 @@ public static unsafe partial class ClassInjector
             }
         }
 
-        //if (method.GetParameters().Any(p => p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition() == typeof(Il2CppReferenceArray<>)))
-        //{
-        //    if (!InjectorHelpers.IsIl2CppStructArrayConstructorAvailable())
-        //    {
-        //        Logger.Instance.LogWarning("Method {Method} on type {DeclaringType} has a parameter of type Il2CppReferenceArray<T> but Il2CppStructArray<T>(Il2CppReferenceArray<T>) constructor is not available", method.ToString(), method.DeclaringType);
-        //        return false;
-        //    }
-        //}
+        if (method.GetParameters().Any(p => p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition() == typeof(Il2CppReferenceArray<>)))
+        {
+            Logger.Instance.LogWarning("Checking for il2cppstructarray constructor");
+            if (!InjectorHelpers.IsIl2CppStructArrayConstructorAvailable())
+            {
+                Logger.Instance.LogWarning("Method {Method} on type {DeclaringType} has a parameter of type Il2CppReferenceArray<T> but Il2CppStructArray<T>(Il2CppReferenceArray<T>) constructor is not available", method.ToString(), method.DeclaringType);
+                return false;
+            }
+        }
 
-        //if (method.GetParameters().Any(p => p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition() == typeof(Il2CppReferenceArray<>)))
-        //{
-        //    if (!InjectorHelpers.IsSpanConstructorAvailable())
-        //    {
-        //        Logger.Instance.LogWarning("Method {Method} on type {DeclaringType} has a parameter of type Il2CppReferenceArray<T> but Span<T>(Il2CppReferenceArray<T>) constructor is not available", method.ToString(), method.DeclaringType);
-        //        return false;
-        //    }
-        //}
+        if (method.GetParameters().Any(p => p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition() == typeof(Il2CppReferenceArray<>)))
+        {
+            Logger.Instance.LogWarning("Checking for span constructor");
+            if (!InjectorHelpers.IsSpanConstructorAvailable())
+            {
+                Logger.Instance.LogWarning("Method {Method} on type {DeclaringType} has a parameter of type Il2CppReferenceArray<T> but Span<T>(Il2CppReferenceArray<T>) constructor is not available", method.ToString(), method.DeclaringType);
+                return false;
+            }
+        }
 
         return true;
     }
